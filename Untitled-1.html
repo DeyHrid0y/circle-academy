@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SKILL FLARE</title>
+
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="pk_test_aW50ZXJuYWwtcm91Z2h5LTc0LmNsZXJrLmFjY291bnRzLmRldiQ"
+    src="https://internal-roughy-74.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js"
+    type="text/javascript">
+  </script>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    /* Dropdown Menu Base */
+    nav ul li {
+        position: relative;
+    }
+
+    /* 2nd level submenu (SSC, HSC ইত্যাদি) */
+    nav ul li ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;          /* ডান দিক থেকে সমান করে নামবে */
+        background: #1e293b;
+        min-width: 180px;
+        list-style: none;
+        padding: 10px 0;
+        border-radius: 8px;
+        z-index: 9999;     /* যেন অন্য সব এলিমেন্টের উপরে থাকে */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    nav ul li:hover > ul {
+        display: block;
+    }
+
+    nav ul li ul li {
+        width: 100%;
+        position: relative; /* এটি খুবই গুরুত্বপূর্ণ ৩য় লেভেলের জন্য */
+    }
+
+    nav ul li ul li a {
+        display: block;
+        padding: 10px 15px;
+        color: white;
+        text-decoration: none;
+    }
+
+    nav ul li ul li a:hover {
+        background: #334155;
+    }
+
+    /* 3rd level submenu (Higher Math, Chemistry ইত্যাদি) */
+    nav ul li ul li ul {
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 100%;       /* ডান পাশে জায়গা না থাকায় বাম পাশে খুলবে */
+        left: auto;
+        min-width: 220px;
+    }
+
+    nav ul li ul li:hover > ul {
+        display: block;
+    }
+
+    /* 4th level submenu (Higher Math 1st paper এর চ্যাপ্টারগুলো) */
+    nav ul li ul li ul li ul {
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 100%;       /* এটিও বাম পাশে খুলবে যাতে স্ক্রিনের বাইরে না যায় */
+        left: auto;
+        min-width: 260px;
+        max-height: 350px; /* ১০টি চ্যাপ্টার একসাথে স্ক্রিনের নিচে নেমে যাওয়া রোধ করবে */
+        overflow-y: auto;  /* বেশি চ্যাপ্টার হলে মেনুর ভেতরে স্ক্রল করা যাবে */
+    }
+
+    nav ul li ul li ul li:hover > ul {
+        display: block;
+    }
+        
+    body{
+      background:#0f172a;
+      color:white;
+    }
+
+    header{
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      background:linear-gradient(to right,#0f172a,#1e293b);
+    }
+
+    header h1{
+      font-size:60px;
+      margin-bottom:15px;
+      color:#38bdf8;
+    }
+
+    header p{
+      font-size:20px;
+      color:#cbd5e1;
+      margin-bottom:20px;
+    }
+
+    .btn{
+      padding:12px 25px;
+      background:#38bdf8;
+      color:black;
+      text-decoration:none;
+      border-radius:8px;
+      font-weight:bold;
+      transition:0.3s;
+    }
+
+    .btn:hover{
+      background:white;
+    }
+
+    nav{
+      width:100%;
+      position:fixed;
+      top:0;
+      left:0;
+      background:#111827;
+      padding:15px 40px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      z-index: 10000;
+    }
+
+    nav h2{
+      color:#38bdf8;
+    }
+
+    /* মেনু এবং বাটনকে পাশাপাশি রেখে বাটনকে বামে পাঠানোর জন্য এই কন্টেইনার */
+    .nav-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-direction: row-reverse; /* এটিই বাটনকে Home এর বামে পাঠায় */
+    }
+
+    /* nav এর ভেতরের ul এর পজিশন ঠিক রাখার জন্য এটি */
+    nav > .nav-container > ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a{
+      text-decoration:none;
+      color:white;
+      transition:0.3s;
+    }
+
+    nav ul li a:hover{
+      color:#38bdf8;
+    }
+    
+    /* লগইন বাটনের চমৎকার স্টাইল */
+    #auth-links button {
+      padding: 6px 14px;
+      background-color: transparent;
+      color: #38bdf8;
+      border: 2px solid #38bdf8;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    #auth-links button:hover {
+      background-color: #38bdf8;
+      color: black;
+    }
+
+    section{
+      padding:100px 10%;
+    }
+
+    .about, .blog, .contact{
+      margin-top:50px;
+    }
+
+    .section-title{
+      font-size:40px;
+      margin-bottom:30px;
+      color:#38bdf8;
+    }
+
+    .card-container{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:20px;
+    }
+
+    .card{
+      background:#1e293b;
+      padding:20px;
+      border-radius:12px;
+      transition:0.3s;
+    }
+
+    .card:hover{
+      transform:translateY(-5px);
+    }
+
+    .card h3{
+      margin-bottom:10px;
+      color:#38bdf8;
+    }
+
+    footer{
+      text-align:center;
+      padding:20px;
+      background:#111827;
+      color:#94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <h2>HRIDOY BLOG</h2>
+
+    <div class="nav-container">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#blog">Blog</a></li>
+        <li><a href="#ssc">SSC</a>
+           <ul>
+            <li><a href="https://drive.google.com/drive/folders/1clETOTeYDspoFLBYIsCY2U7cdFqnr18a?usp=drive_link">Physics</a></li>
+            <li><a href="https://drive.google.com/drive/folders/149bc8mIxB9NnRMapHTZWHcxdWAnPPssd?usp=drive_link">Higher Math</a></li>
+           </ul>
+          </li>
+        <li><a href="#hsc">HSC</a>
+          <ul>
+            <li><a href="https://drive.google.com/drive/folders/1F7nLSdXip4g5aiB2Qx-DHV4YwbwFPvJ-?usp=drive_link">Physics</a></li>
+            <li><a href="#highermath">Higher Math</a>
+              <ul>
+                <li> <a href="https://drive.google.com/drive/folders/1TJs31ZX9S4xA8bwqBdBtyq2RecBiMf4L?usp=drive_link">Higher Math 1st paper</a>
+                  <ul> 
+                    <li> <a href="#">CH-1:  Matrices & Determiinants</a></li>
+                    <li> <a href="#">CH-2: Vectors</a></li>
+                    <li> <a href="#">CH-3: Straight Lines </a> </li>
+                    <li> <a href="#">CH-4:  Cicles</a> </li>
+                    <li> <a href="#">CH-5:  Permutation & Combinations</a> </li>
+                    <li> <a href="#"> CH-6:  Trigonometric ratios</a> </li>
+                    <li> <a href="#">CH-7:  Trigonoetric ratios of associated angles</a></li>
+                    <li> <a href="#">CH-8:  Function an graphj of function </a></li>
+                    <li> <a href="#">CH-9:  Differentiation </a></li>
+                    <li> <a href="#">CH-10: Integration </a></li>
+                  </ul>
+                </li>
+                <li> <a href="https://drive.google.com/drive/folders/1TJs31ZX9S4xA8bwqBdBtyq2RecBiMf4L?usp=drive_link">Higher Math 2nd paper</a></li>
+              </ul>
+            </li>
+            <li><a href="#Chemistry">Chemistry</a>
+              <ul>
+                <li> <a href="https://drive.google.com/drive/folders/1BXJH4_4bjaWOhuLzeCkV1OsSQz1w5VVe?usp=drive_link">Chemistry 1st paper</a></li>
+                <li> <a href="https://drive.google.com/drive/folders/1BXJH4_4bjaWOhuLzeCkV1OsSQz1w5VVe?usp=drive_link">Chemistry 2nd paper</a></li>
+              </ul>
+            </li>
+            <li><a href="#ict"> ICT</a> </li>
+          </ul>
+        </li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <div id="auth-links"></div>
+    </div>
+  </nav>
+
+  <header>
+    <h1>Welcome To My Blog</h1>
+    <p>I write about coding, tech and life.</p>
+
+    <a href="#blog" class="btn">Read Blogs</a>
+  </header>
+
+  <section class="about" id="about">
+    <h2 class="section-title">About Me</h2>
+
+    <p>
+      Hello! I am a beginner web developer and programmer.
+      I love creating websites and learning new technologies.
+    </p>
+  </section>
+
+  <section class="blog" id="blog">
+    <h2 class="section-title">Latest Blogs</h2>
+
+    <div class="card-container">
+
+      <div class="card">
+        <h3>Learn HTML</h3>
+        <p>
+          HTML is the structure of every website.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>CSS Design</h3>
+        <p>
+          CSS makes websites beautiful and responsive.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>JavaScript Basics</h3>
+        <p>
+          JavaScript adds interactivity to websites.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <h2 class="section-title">Contact</h2>
+
+    <p>Email: hdey@gmail.com</p>
+    <p><a href="http://web.facebook.com/hrid0ydey"> Hridoy Dey</a></p>
+  </section>
+
+  <footer>
+    © 2026 HRIDOY BLOG | All Rights Reserved
+  </footer>
+
+  <script>
+    /* for login*/ 
+    window.addEventListener('load', async function () {
+        while (!window.Clerk) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+
+        // অরিজিনাল লিঙ্কটি এখানে /circle-academy সহ নিখুঁতভাবে ফিক্স করা হলো
+        await Clerk.load({
+            publishableKey: 'pk_test_aW50ZXJuYWwtcm91Z2h5LTc0LmNsZXJrLmFjY291bnRzLmRldiQ',
+            developmentOrigin: 'https://deyhrid0y.github.io/circle-academy'
+        });
+
+        const authLinksContainer = document.getElementById('auth-links');
+
+        if (Clerk.user) {
+            authLinksContainer.innerHTML = `<div id="user-button"></div>`;
+            Clerk.mountUserButton(document.getElementById('user-button'));
+        } else {
+            authLinksContainer.innerHTML = `<button id="login-btn">Login / Sign Up</button>`;
+            document.getElementById('login-btn').addEventListener('click', () => {
+                Clerk.openSignIn({
+                    redirectUrl: window.location.href,
+                    afterSignInUrl: window.location.href
+                });
+            });
+        }
+    });
+  </script>
+
+</body>
+</html>
