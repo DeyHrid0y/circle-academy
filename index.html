@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SKILL FLARE</title>
 
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="pk_test_aW50ZXJuYWwtcm91Z2h5LTc0LmNsZXJrLmFjY291bnRzLmRldiQ"
+    src="https://internal-roughy-74.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js"
+    type="text/javascript">
+  </script>
+
   <style>
     *{
       margin:0;
@@ -157,6 +165,52 @@ nav ul li ul li ul li:hover > ul {
     nav ul li a:hover{
       color:#38bdf8;
     }
+    /* ১. মেনু এবং বাটনকে পাশাপাশি রেখে বাটনকে বামে পাঠানোর জন্য এই কন্টেইনারের স্টাইল */
+.nav-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-direction: row-reverse; /* এটিই বাটনকে Home এর বামে পাঠায় */
+}
+
+/* ২. nav এর ভেতরের ul এর পজিশন ঠিক রাখার জন্য এটি আপডেট করা হয়েছে */
+nav > .nav-container > ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+/* ৩. লগইন বাটনের আউটলুক সুন্দর করার জন্য এই নতুন স্টাইলটি যোগ করা হয়েছে */
+#auth-links button {
+  padding: 6px 14px;
+  background-color: transparent;
+  color: #38bdf8;
+  border: 2px solid #38bdf8;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+#auth-links button:hover {
+  background-color: #38bdf8;
+  color: black;
+}
+    
+ /* লগইন বাটনের চমৎকার স্টাইল */
+    #auth-links button {
+      padding: 6px 14px;
+      background-color: transparent;
+      color: #38bdf8;
+      border: 2px solid #3868f8;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    #auth-links button:hover {
+      background-color: #38bdf8;
+      color: black;
+    }
 
     section{
       padding:100px 10%;
@@ -245,11 +299,12 @@ nav ul li ul li ul li:hover > ul {
               <li> <a href="https://drive.google.com/drive/folders/1BXJH4_4bjaWOhuLzeCkV1OsSQz1w5VVe?usp=drive_link">Chemistry 2nd paper</a></li>
             </ul>
           </li>
-          <li><a href="#ict"> ICT</a> plz wait for upload </li>
+          <li><a href="#ict"> ICT</a> </li>
         </ul>
       </li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+     <div id="auth-links"></div>
   </nav>
 
   <header>
@@ -307,6 +362,31 @@ nav ul li ul li ul li:hover > ul {
   <footer>
     © 2026 HRIDOY BLOG | All Rights Reserved
   </footer>
+
+    <script>
+      /* for login*/ 
+    window.addEventListener('load', async function () {
+        while (!window.Clerk) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        await Clerk.load();
+
+        const authLinksContainer = document.getElementById('auth-links');
+
+        if (Clerk.user) {
+            authLinksContainer.innerHTML = `<div id="user-button"></div>`;
+            Clerk.mountUserButton(document.getElementById('user-button'));
+        } else {
+            authLinksContainer.innerHTML = `<button id="login-btn">Login / Sign Up</button>`;
+            document.getElementById('login-btn').addEventListener('click', () => {
+                Clerk.openSignIn({
+                    redirectUrl: window.location.href,
+                    afterSignInUrl: window.location.href
+                });
+            });
+        }
+    });
+  </script>
 
 </body>
 </html>
